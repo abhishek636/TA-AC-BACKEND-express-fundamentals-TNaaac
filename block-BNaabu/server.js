@@ -15,7 +15,7 @@ app.get("/about", (req, res) => {
 });
 
 // Error handling midddelware if the route is other than the '/' and '/about  then this will thorow an error'
-// handling the route /
+
 app.use((req, res, next) => {
     res.send('Page not Found')
 });
