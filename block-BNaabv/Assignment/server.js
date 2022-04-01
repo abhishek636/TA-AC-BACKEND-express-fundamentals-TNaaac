@@ -1,16 +1,23 @@
 let express = require("express");
 let app = express();
-let bodyParser = require("body-parser");
 let logger = require("morgan");
 let cookieParser = require("cookie-parser");
+
 //adding middelwares for parsing the data in into the json format
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 // logger to keep track of our every request and response
+
 app.use(logger("dev"));
+
 // adding the cookie
+
 app.use(cookieParser());
+
 // sending cookie to user
+
 app.use((req, res, next) => {
   res.cookie("server", "Connected to localhost server is running locally");
   next();
@@ -34,29 +41,23 @@ app.post("/json", (req, res) => {
 });
 
 //manipulating  the url and query from it 
-app.get('/user:username' , (req ,res)=>{
+app.get('/user/:username' , (req ,res)=>{
   let username = req.params.username;
-  res.end(username);
+  res.send(`<h2>${username}<h2>`);
 })
 
-// Error Handler middelwares if the requested route is other than the '/' , 'form ','json','about' then it will throw an  error  404 page not found error along with the status code
-app.use((req, res, next) => {
-  if (
-    req.url != "/" ||
-    req.url != "/about" ||
-    req.url != "/form" ||
-    req.url != "/json"
-  ) {
-    next("404 Error page not found ");
-  }
-  next();
+// 404 middleware
+
+app.use((req,res,next) =>{
+  res.send('Page Not Found')
 });
 
+// Custom middleware
+
 app.use((err, req, res, next) => {
-  res.status(404).send(err);
-  next();
+  res.send(err);
 });
-// listening the request on the port 5K
-app.listen(5000, () => {
-  console.log("Iistening the request on the port 5K");
+// listening the request on the port 3K
+app.listen(3000, () => {
+  console.log("Iistening the request on the port 3K");
 });
